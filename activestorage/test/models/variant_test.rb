@@ -26,4 +26,13 @@ class ActiveStorage::VariantTest < ActiveSupport::TestCase
     assert_equal 67, image.height
     assert_match(/Gray/, image.colorspace)
   end
+
+  test "padded out thumbnail variation" do
+    variant = @blob.variant(thumbnail: "100x100>", background: :white, extent: "100x100", gravity: :center).processed
+    assert_match(/racecar\.jpg/, variant.service_url)
+
+    image = read_image(variant)
+    assert_equal 100, image.width
+    assert_equal 100, image.height
+  end
 end

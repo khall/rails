@@ -38,6 +38,8 @@ class ActiveStorage::Variant
   attr_reader :blob, :variation
   delegate :service, to: :blob
 
+  FILENAME_MAX_SIZE = 255
+
   def initialize(blob, variation_or_variation_key)
     @blob, @variation = blob, ActiveStorage::Variation.wrap(variation_or_variation_key)
   end
@@ -50,7 +52,7 @@ class ActiveStorage::Variant
 
   # Returns a combination key of the blob and the variation that together identifies a specific variant.
   def key
-    "variants/#{blob.key}/#{variation.key}"
+    "variants/#{blob.key}/#{variation.key.scan(/.{1,#{FILENAME_MAX_SIZE}}/).join("/")}"
   end
 
   # Returns the URL of the variant on the service. This URL is intended to be short-lived for security and not used directly
